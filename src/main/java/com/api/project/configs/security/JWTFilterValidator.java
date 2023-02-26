@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class JWTFilterValidator extends BasicAuthenticationFilter {
@@ -77,10 +79,17 @@ public class JWTFilterValidator extends BasicAuthenticationFilter {
 
         UserModel userModel = userRepository.findByEmail(user);
 
-        System.out.println(roles);
-        System.out.println(userModel.getAuthorities().stream());
+        String role = (roles.get("roles").asString());
 
-        return new UsernamePasswordAuthenticationToken(user,null,userModel.getAuthorities()); // ArrayList = permissionList
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        switch (role) {
+            case "ROLE_ROOT" -> authorities.add(new SimpleGrantedAuthority("ROLE_ROOT"));
+            case "ROLE_ADMIN" -> authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            case "ROLE_USER" -> authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
+        return new UsernamePasswordAuthenticationToken(user,null,authorities); // ArrayList = permissionList
 
     }
 

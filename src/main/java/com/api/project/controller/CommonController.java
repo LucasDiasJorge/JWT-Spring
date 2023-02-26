@@ -15,6 +15,7 @@ import java.util.Map;
 @RequestMapping(("/api/common"))
 public class CommonController {
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/ping")
     public Map<String,Object> ping(){
 

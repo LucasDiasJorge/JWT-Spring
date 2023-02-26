@@ -30,7 +30,7 @@ public class UserController {
         this.encoder = encoder;
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/find")
     public ResponseEntity<List<UserModel>> findAllUsers(){
 

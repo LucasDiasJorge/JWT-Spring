@@ -44,7 +44,7 @@ public class JWTConfig extends WebSecurityConfigurerAdapter {
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/common/ping").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/user/find").hasRole("ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/user/find").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthFilter(authenticationManager(), userRepository))
