@@ -43,7 +43,8 @@ public class JWTAuthFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             UserModel user = new ObjectMapper().readValue(request.getInputStream(), UserModel.class);
-            if(user.getAttempts() < maxAttempts) {
+            UserModel userVerify = userRepository.findByEmail(user.getEmail());
+            if(userVerify.getAttempts() < maxAttempts) {
                 return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         user.getEmail(), user.getPass(), user.getRoles()
                 ));
@@ -64,6 +65,7 @@ public class JWTAuthFilter extends UsernamePasswordAuthenticationFilter {
                 .withSubject(userDetailsData.getUsername())
                 .withClaim("roles",userRepository.findByEmail(userDetailsData.getUsername()).getRoles().get(0).getRoleName().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION))
+                //.withExpiresAt(new Date(System.currentTimeMillis() + 5000000000000L)) Token vitalicio
                 .sign(Algorithm.HMAC512(TOKEN_PASS));
 
         System.out.println(authResult.getAuthorities().toString());
