@@ -40,11 +40,10 @@ public class JWTConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable() // Remove disable if in production
+        http
+                .csrf()
+                .disable() // Remove disable if in production
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/common/ping").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/user/find").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthFilter(authenticationManager(), userRepository))
